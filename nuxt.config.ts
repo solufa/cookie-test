@@ -1,5 +1,4 @@
 import { NuxtConfig } from '@nuxt/types'
-import aspidaConfig from './aspida.config'
 
 const config: NuxtConfig = {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -39,17 +38,6 @@ const config: NuxtConfig = {
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module'
   ],
-
-  // Modules (https://go.nuxtjs.dev/config-modules)
-  modules: [
-    // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios'
-  ],
-
-  // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {
-    baseURL: aspidaConfig.baseURL
-  },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {}

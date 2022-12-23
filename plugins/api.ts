@@ -1,29 +1,31 @@
 import { Plugin } from '@nuxt/types'
+import axios from 'axios'
 import aspida from '@aspida/axios'
-import api from '~/server/api/$api'
-
-const createInstance = (axios: any) => api(aspida(axios))
-
-type ApiInstance = ReturnType<typeof createInstance>
+import api, { ApiInstance } from '~/server/api/$api'
+import api2, { ApiInstance as Api2Instance } from '~/server2/api/$api'
 
 declare module '@nuxt/types' {
   interface Context {
     $api: ApiInstance
+    $api2: Api2Instance
   }
   interface NuxtAppOptions {
     $api: ApiInstance
+    $api2: Api2Instance
   }
 }
 
 declare module 'vue/types/vue' {
   interface Vue {
     $api: ApiInstance
+    $api2: Api2Instance
   }
 }
 
 declare module '@nuxt/types' {
   interface NuxtAppOptions {
     $api: ApiInstance
+    $api2: Api2Instance
   }
 }
 
@@ -31,10 +33,13 @@ declare module 'vuex/types/index' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Store<S> {
     $api: ApiInstance
+    $api2: Api2Instance
   }
 }
 
-const plugin: Plugin = ({ $axios }, inject) =>
-  inject('api', createInstance($axios))
+const plugin: Plugin = (_, inject) => {
+  inject('api', api(aspida(axios)))
+  inject('api2', api2(aspida(axios)))
+}
 
 export default plugin

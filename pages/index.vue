@@ -3,6 +3,10 @@
     <div class="container">
       <div>
         <h1 class="title">cookie-test</h1>
+        <button @click="get1">GET1</button>
+        <div>res1: {{ res1 }}</div>
+        <button @click="get2">GET2</button>
+        <div>res2: {{ res2 }}</div>
       </div>
     </div>
   </div>
@@ -11,7 +15,21 @@
 <script lang="ts">
 import Vue from 'vue'
 
-export default Vue.extend({})
+export default Vue.extend({
+  data() {
+    return { res1: '', res2: '' }
+  },
+  methods: {
+    async get1() {
+      const aa = await this.$api.$get()
+      this.res1 = aa
+    },
+    async get2() {
+      const bb = await this.$api2.$get()
+      this.res2 = bb
+    }
+  }
+})
 </script>
 
 <style scoped>
