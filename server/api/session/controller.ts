@@ -20,7 +20,7 @@ export default defineController(() => ({
           secure: process.env.NODE_ENV !== 'development',
           domain: COOKIE_DOMAIN,
           path: '/',
-          sameSite: 'lax'
+          sameSite: 'none'
         })
         done()
       }
