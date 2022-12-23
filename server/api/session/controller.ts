@@ -1,11 +1,10 @@
-import { CookieSerializeOptions } from '@fastify/cookie'
 import { defineController } from './$relay'
 import { COOKIE_DOMAIN } from '$/service/envValues'
 
 export type AdditionalRequest = {
   body: {
     id: string
-    sameSite: CookieSerializeOptions['sameSite']
+    removeCredentials: boolean
   }
 }
 
@@ -19,19 +18,13 @@ export default defineController(() => ({
           secure: process.env.NODE_ENV !== 'development',
           domain: COOKIE_DOMAIN,
           path: '/',
-          sameSite: req.body?.sameSite
+          sameSite: 'none'
         })
-        done()
-      }
-    },
-    handler: () => {
-      return { status: 200, body: { status: 'success' } }
-    }
-  },
-  delete: {
-    hooks: {
-      preHandler: (req, reply, done) => {
-        reply.clearCookie('id', { path: '/', sameSite: req.body?.sameSite })
+
+        if (req.body?.removeCredentials) {
+          reply.removeHeader('access-control-allow-credentials')
+        }
+
         done()
       }
     },

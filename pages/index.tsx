@@ -2,30 +2,25 @@ import { defineComponent, useContext } from '@nuxtjs/composition-api'
 import styles from './-styles.module.css'
 import { useState } from '~/plugins/useState'
 
-type SameSite = 'none' | 'lax' | 'strict' | undefined
-
 export default defineComponent({
   setup() {
     const ctx = useContext()
     const [id, setId] = useState('')
     const [res, setRes] = useState('')
-    const [prevSamesite, setPrevSamesite] = useState<SameSite>()
     const fetchMe = async () => {
-      const res = await ctx.$api2.me.$get().catch(() => null)
-      setRes(
-        !res
-          ? 'Failure'
-          : res.status === 'login'
-          ? `success: ID=${res.id}`
-          : 'logout'
-      )
+      const res = await ctx.$api2.me.$get()
+      setRes(res.status === 'login' ? `success: ID=${res.id}` : 'logout')
     }
-    const post = async (sameSite: SameSite) => {
+    const post = async (removeCredentials: boolean) => {
       setRes('')
-      await ctx.$api.session.$delete({ body: { sameSite: prevSamesite.value } })
-      await ctx.$api.session.$post({ body: { id: id.value, sameSite } })
-      setPrevSamesite(sameSite)
-      await fetchMe()
+      try {
+        await ctx.$api.session.$post({
+          body: { id: id.value, removeCredentials }
+        })
+        await fetchMe()
+      } catch (e) {
+        setRes('Failure')
+      }
     }
 
     return () => (
@@ -40,13 +35,12 @@ export default defineComponent({
               e.target instanceof HTMLInputElement && setId(e.target.value)
             }
           />
-          {([undefined, 'none', 'lax', 'strict'] as const).map((samesite) => (
-            <div key={samesite}>
-              <button onClick={() => post(samesite)}>
-                Samesite={samesite ?? 'undefined'}
-              </button>
-            </div>
-          ))}
+          <div>
+            <button onClick={() => post(true)}>removeCredentials=true</button>
+          </div>
+          <div>
+            <button onClick={() => post(false)}>removeCredentials=false</button>
+          </div>
           <div>res: {res.value}</div>
         </div>
       </div>
