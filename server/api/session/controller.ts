@@ -1,4 +1,5 @@
 import { defineController } from './$relay'
+import { COOKIE_DOMAIN } from '$/service/envValues'
 
 export type AdditionalRequest = {
   body: {
@@ -17,6 +18,7 @@ export default defineController(() => ({
           expires: new Date(Date.now() + expiresIn),
           httpOnly: true,
           secure: process.env.NODE_ENV !== 'development',
+          domain: COOKIE_DOMAIN,
           path: '/',
           sameSite: 'lax'
         })

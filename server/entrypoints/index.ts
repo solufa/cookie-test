@@ -2,13 +2,17 @@ import Fastify from 'fastify'
 import helmet from '@fastify/helmet'
 import cors from '@fastify/cors'
 import cookie from '@fastify/cookie'
-import { API_SERVER_PORT, API_BASE_PATH } from '$/service/envValues'
+import {
+  API_SERVER_PORT,
+  API_BASE_PATH,
+  CORS_ORIGIN
+} from '$/service/envValues'
 import server from '$/$server'
 
 const fastify = Fastify()
 
 fastify.register(helmet, { crossOriginResourcePolicy: false })
-fastify.register(cors)
+fastify.register(cors, { origin: CORS_ORIGIN, credentials: true })
 fastify.register(cookie)
 
 server(fastify, { basePath: API_BASE_PATH })

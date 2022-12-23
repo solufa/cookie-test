@@ -38,8 +38,8 @@ declare module 'vuex/types/index' {
 }
 
 const plugin: Plugin = (_, inject) => {
-  inject('api', api(aspida(axios)))
-  inject('api2', api2(aspida(axios)))
+  inject('api', api(aspida(axios, { withCredentials: true })))
+  inject('api2', api2(aspida(axios, { withCredentials: true })))
 }
 
 export default plugin
