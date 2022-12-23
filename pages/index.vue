@@ -1,34 +1,8 @@
 <template>
   <div>
-    <user-banner />
     <div class="container">
       <div>
-        <logo />
-        <h1 class="title">frourio-todo-app</h1>
-        <div v-if="!$fetchState.pending">
-          <form @submit.prevent="createTask">
-            <input v-model="newLabel" type="text" />
-            <input type="submit" value="ADD" />
-          </form>
-          <ul class="tasks">
-            <li v-for="task in tasks" :key="task.id">
-              <label>
-                <input
-                  type="checkbox"
-                  :checked="task.done"
-                  @change="toggleDone(task)"
-                />
-                <span>{{ task.label }}</span>
-              </label>
-              <input
-                type="button"
-                value="DELETE"
-                style="float: right"
-                @click="deleteTask(task)"
-              />
-            </li>
-          </ul>
-        </div>
+        <h1 class="title">cookie-test</h1>
       </div>
     </div>
   </div>
@@ -36,47 +10,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import type { Task } from '$/types'
-import UserBanner from '~/components/UserBanner.vue'
-import Logo from '~/components/Logo.vue'
 
-export default Vue.extend({
-  components: {
-    UserBanner,
-    Logo
-  },
-  data() {
-    return {
-      tasks: [] as Task[],
-      newLabel: ''
-    }
-  },
-  async fetch() {
-    await this.fetchTasks()
-  },
-  methods: {
-    async fetchTasks() {
-      this.tasks = await this.$api.tasks.$get()
-    },
-    async createTask() {
-      if (!this.newLabel) return
-
-      await this.$api.tasks.post({ body: { label: this.newLabel } })
-      this.newLabel = ''
-      await this.fetchTasks()
-    },
-    async toggleDone(task: Task) {
-      await this.$api.tasks
-        ._taskId(task.id)
-        .patch({ body: { done: !task.done } })
-      await this.fetchTasks()
-    },
-    async deleteTask(task: Task) {
-      await this.$api.tasks._taskId(task.id).delete()
-      await this.fetchTasks()
-    }
-  }
-})
+export default Vue.extend({})
 </script>
 
 <style scoped>
@@ -97,18 +32,5 @@ export default Vue.extend({
   font-size: 100px;
   color: #35495e;
   letter-spacing: 1px;
-}
-
-.tasks {
-  width: 300px;
-  padding: 0;
-  margin: 20px auto 0;
-  list-style-type: none;
-  text-align: left;
-}
-
-.tasks > li {
-  margin-top: 10px;
-  border-bottom: 1px solid #eee;
 }
 </style>

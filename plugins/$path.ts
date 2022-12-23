@@ -1,16 +1,6 @@
 import type { Plugin } from '@nuxt/types'
 
-type OptionalQuery0 = {
-  search?: string
-}
-
 export const pagesPath = {
-  article: {
-    _id: (id?: string | number) => ({
-      $url: (url?: { hash?: string }) => ({ path: `/article${id !== undefined ? `/${id}` : ''}`, hash: url?.hash })
-    }),
-    $url: (url?: { query?: OptionalQuery0, hash?: string }) => ({ path: '/article', query: url?.query as any, hash: url?.hash })
-  },
   $url: (url?: { hash?: string }) => ({ path: '/', hash: url?.hash })
 }
 
