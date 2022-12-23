@@ -11,4 +11,4 @@ fastify.register(cors)
 
 server(fastify, { basePath: API_BASE_PATH })
 
-fastify.listen({ port: API_SERVER_PORT })
+fastify.listen({ port: API_SERVER_PORT, host: '0.0.0.0' })
