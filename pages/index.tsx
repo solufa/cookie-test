@@ -2,15 +2,14 @@ import { defineComponent, useContext } from '@nuxtjs/composition-api'
 import styles from './-styles.module.css'
 import { useState } from '~/plugins/useState'
 
+type SameSite = 'none' | 'lax' | 'strict' | undefined
+
 export default defineComponent({
   setup() {
     const ctx = useContext()
     const [id, setId] = useState('')
     const [res, setRes] = useState('')
-    const reset = async () => {
-      setRes('')
-      await ctx.$api.session_delete.$delete()
-    }
+    const [prevSamesite, setPrevSamesite] = useState<SameSite>()
     const fetchMe = async () => {
       const res = await ctx.$api2.me.$get().catch(() => null)
       setRes(
@@ -21,30 +20,11 @@ export default defineComponent({
           : 'logout'
       )
     }
-    const postNone = async () => {
-      await reset()
-      await ctx.$api.session_samesite_none.$post({ body: { id: id.value } })
-      await fetchMe()
-    }
-    const postUndefined = async () => {
-      await reset()
-      await ctx.$api.session_samesite_undefined.$post({
-        body: { id: id.value }
-      })
-      await fetchMe()
-    }
-    const postLax = async () => {
-      await reset()
-      await ctx.$api.session_samesite_lax.$post({
-        body: { id: id.value }
-      })
-      await fetchMe()
-    }
-    const postStrict = async () => {
-      await reset()
-      await ctx.$api.session_samesite_strict.$post({
-        body: { id: id.value }
-      })
+    const post = async (sameSite: SameSite) => {
+      setRes('')
+      await ctx.$api.session.$delete({ body: { sameSite: prevSamesite.value } })
+      await ctx.$api.session.$post({ body: { id: id.value, sameSite } })
+      setPrevSamesite(sameSite)
       await fetchMe()
     }
 
@@ -60,14 +40,11 @@ export default defineComponent({
               e.target instanceof HTMLInputElement && setId(e.target.value)
             }
           />
-          {[
-            { samesite: 'undefined', onClick: postUndefined },
-            { samesite: 'None', onClick: postNone },
-            { samesite: 'Lax', onClick: postLax },
-            { samesite: 'Strict', onClick: postStrict }
-          ].map((vals) => (
-            <div key={vals.samesite}>
-              <button onClick={vals.onClick}>Samesite={vals.samesite}</button>
+          {([undefined, 'none', 'lax', 'strict'] as const).map((samesite) => (
+            <div key={samesite}>
+              <button onClick={() => post(samesite)}>
+                Samesite={samesite ?? 'undefined'}
+              </button>
             </div>
           ))}
           <div>res: {res.value}</div>
