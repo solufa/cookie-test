@@ -90,9 +90,9 @@ sw.*
 *.swp
 
 # server
-server/**/$*.ts
 server/index.js
-
-# server
-server2/**/$*.ts
 server2/index.js
+
+### Misc
+$*.ts
+*.module.css.d.ts
